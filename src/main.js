@@ -2,8 +2,6 @@ const Web3 = require("web3");
 const ethers = require("ethers");
 const ethProvider = require("eth-provider");
 
-tokenAddress = "0x68ea056d4fb87147a9a237c028b6b1476bf7b367";
-
 const run = async () => {
   // we use 'eth-provider' so frame works as expected
   // unfortunatly it returns an web3 provider so we wrap this again
@@ -14,11 +12,12 @@ const run = async () => {
   const signer = provider.getSigner();
 
   const token = new ethers.Contract(
-    tokenAddress,
-    ["function mint(address to, uint256 amount) public"],
+    process.argv[2],
+    ["function transfer(address recipient, uint256 amount) external"],
     signer
   );
-  await token.mint("0x" + "F".repeat(40), (1e18).toString());
+  const tx = await token.transfer(process.argv[3], process.argv[4]);
+  console.log(tx);
 };
 
 run()
